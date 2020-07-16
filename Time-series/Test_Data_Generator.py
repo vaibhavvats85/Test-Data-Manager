@@ -11,14 +11,22 @@ class TestDataGenerator:
         self.size = size
 
     def filterCharColumn(self):
-        floatColumns = [];
-        types = ['object', 'bool', 'category']
+        floatColumns = []
+        types = ["object", "bool"]
         columns = self.df.columns
         for col in columns:
             if (self.df[col].dtype in types):
                 floatColumns.append(col)
         return self.removeDateCol(floatColumns)
-
+    
+    def filterNumColumn(self): 
+        charCols = self.filterCharColumn()
+        date_type = self.df[self.date_col].dtype
+        cols = list(self.df.select_dtypes(exclude=[date_type]))
+        for col in charCols:
+            if col in cols:
+                cols.remove(col)
+        return cols
 
     def removeDateCol(self, cols):
         for col in cols:
@@ -31,8 +39,6 @@ class TestDataGenerator:
 
         model = ARIMA(df, order=(2, 1, 2))
         results_ARIMA = model.fit(disp=-1)
-
-        predictions_ARIMA_diff = pd.Series(results_ARIMA.fittedvalues, copy=True)
 
         predictions = results_ARIMA.forecast(steps=self.size)[0]
         pred_Series = round(pd.Series(predictions))
