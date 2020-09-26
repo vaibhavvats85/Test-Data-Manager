@@ -5,10 +5,11 @@ from datetime import timedelta
 
 class TestDataGenerator:
 
-    def __init__(self, df, date_col, size):
+    def __init__(self, df, date_col, size, id):
         self.df = df
         self.date_col = date_col
         self.size = size
+        self.id = id
 
     def filterCharColumn(self):
         floatColumns = []
@@ -17,7 +18,7 @@ class TestDataGenerator:
         for col in columns:
             if (self.df[col].dtype in types):
                 floatColumns.append(col)
-        return self.removeDateCol(floatColumns)
+        return self.removeCol(floatColumns, self.date_col)
     
     def filterNumColumn(self): 
         charCols = self.filterCharColumn()
@@ -26,18 +27,17 @@ class TestDataGenerator:
         for col in charCols:
             if col in cols:
                 cols.remove(col)
-        return cols
+        return self.removeCol(cols, self.id)
 
-    def removeDateCol(self, cols):
+    def removeCol(self, cols, col_name):
         for col in cols:
-            if col == self.date_col:
+            if col == col_name:
                 cols.remove(col)
         return cols
 
     def predictColumn(self, series_col):
         df = self.df.groupby(self.date_col).sum()[series_col]
-
-        model = ARIMA(df, order=(2, 1, 2))
+        model = ARIMA(df, order=(2, 1, 1))
         results_ARIMA = model.fit(disp=-1)
 
         predictions = results_ARIMA.forecast(steps=self.size)[0]
@@ -60,6 +60,6 @@ class TestDataGenerator:
     def getRandomColumn(self,columns):
         data = pd.DataFrame()
         for col in columns:
-            random = self.df.sample(self.size)[col]
-            data = pd.concat([data, random], axis =1)
+            random = self.df.sample(self.size)[col].str.encode('utf8').reset_index()
+            data = pd.concat([data, random], axis = 1)
         return data

@@ -1,0 +1,1 @@
+python kerpow/app.py && python Time-series/API.py

@@ -50,15 +50,14 @@ class TableList(Resource):
                     'from' : 'tableList'
                     }
                 selectTable = SelectedTable()
-                print('getValues ', getValues)
                 value = selectTable.TableInfo(getValues)
                 returnValues.append(value)
             cur.close()
             db.close()
         except Exception as e:
             return {'connect' : False}
-        return returnValues 
-      
+        return returnValues
+
     
     def post(self):
         r = request.json

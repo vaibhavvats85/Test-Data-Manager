@@ -18,7 +18,7 @@ class Login(Resource):
             user = {
                     'user': userDetails[0][0],
                     'email': userDetails[0][1],
-                    'createdOn': userDetails[0][3]
+                    # 'createdOn': userDetails[0][3]
                     }
         cur.close()
         return jsonify(user)

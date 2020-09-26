@@ -2,10 +2,9 @@ import mysql.connector
 
 class MySqlConnection:
 
-  def __init__(self, host, port, user, password, database):
+  def __init__(self, host, user, password, database):
       self.mydb = mysql.connector.connect(
         host=host,
-        port=port,
         user=user,
         password=password,
         database=database
